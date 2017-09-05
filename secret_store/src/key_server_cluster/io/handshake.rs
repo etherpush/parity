@@ -39,7 +39,7 @@ use futures::{Future, Poll, Async};
 use tokio_io::{AsyncRead, AsyncWrite};
 use ethcrypto::ecdh::agree;
 use ethkey::{Random, Generator, KeyPair, Public, Signature, verify_public, sign, recover};
-use util::H256;
+use bigint::hash::H256;
 use key_server_cluster::{NodeId, Error, NodeKeyPair};
 use key_server_cluster::message::{Message, ClusterMessage, NodePublicKey, NodePrivateKeySignature};
 use key_server_cluster::io::{write_message, write_encrypted_message, WriteMessage, ReadMessage,
@@ -318,7 +318,7 @@ mod tests {
 	use std::collections::BTreeSet;
 	use futures::Future;
 	use ethkey::{Random, Generator, sign};
-	use util::H256;
+	use bigint::hash::H256;
 	use key_server_cluster::PlainNodeKeyPair;
 	use key_server_cluster::io::message::tests::TestIo;
 	use key_server_cluster::message::{Message, ClusterMessage, NodePublicKey, NodePrivateKeySignature};

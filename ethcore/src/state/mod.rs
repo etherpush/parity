@@ -42,6 +42,8 @@ use transaction::SignedTransaction;
 use state_db::StateDB;
 use evm::{Factory as EvmFactory};
 
+use bigint::prelude::U256;
+use bigint::hash::H256;
 use util::*;
 
 use util::trie;
@@ -210,7 +212,8 @@ pub fn check_proof(
 		Err(_) => return ProvedExecution::BadProof,
 	};
 
-	match state.execute(env_info, engine, transaction, TransactOptions::with_no_tracing(), true) {
+	let options = TransactOptions::with_no_tracing().save_output_from_contract();
+	match state.execute(env_info, engine, transaction, options, true) {
 		Ok(executed) => ProvedExecution::Complete(executed),
 		Err(ExecutionError::Internal(_)) => ProvedExecution::BadProof,
 		Err(e) => ProvedExecution::Failed(e),
@@ -244,7 +247,7 @@ pub fn prove_transaction<H: AsHashDB + Send + Sync>(
 		Err(_) => return None,
 	};
 
-	let options = TransactOptions::with_no_tracing().dont_check_nonce();
+	let options = TransactOptions::with_no_tracing().dont_check_nonce().save_output_from_contract();
 	match state.execute(env_info, engine, transaction, options, virt) {
 		Err(ExecutionError::Internal(_)) => None,
 		Err(e) => {
@@ -1053,7 +1056,9 @@ mod tests {
 	use hash::keccak;
 	use super::*;
 	use ethkey::Secret;
-	use util::{U256, H256, Address};
+	use bigint::prelude::U256;
+	use bigint::hash::H256;
+	use util::Address;
 	use tests::helpers::*;
 	use vm::EnvInfo;
 	use spec::*;
